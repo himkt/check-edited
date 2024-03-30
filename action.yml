@@ -1,0 +1,61 @@
+name: check edited
+
+description: Check target file(s) is updated between given branches
+
+inputs:
+  source-branch:
+    description: 'source branch'
+
+  target-branch:
+    description: 'target branch'
+    default: 'main'
+    required: true
+
+  target-file:
+    description: 'file(s) you want to check (comma separated)'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: |
+        set -euo pipefail
+
+        source_branch=$(printf '%q' "$SOURCE_BRANCH")
+        target_branch=$(printf '%q' "$TARGET_BRANCH")
+
+        if [ "$source_branch" = "''" ]; then
+          echo "Using HEAD for source-branch"
+          source_branch=HEAD
+        else
+          source_branch="origin/$source_branch"
+          echo "Using specified branch $source_branch for source-branch"
+          git fetch --quiet "$source_branch"
+        fi
+
+        target_branch="origin/$target_branch"
+        echo "Using $target_branch for target-branch"
+        git fetch --quiet "$target_branch"
+
+        echo
+        echo "============================="
+        echo "source-branch: $source_branch"
+        echo "target-branch: $target_branch"
+        echo "target-file: $TARGET_FILE"
+        echo "============================="
+        echo
+
+        echo "$TARGET_FILE" | tr ',' '\n' | while read -r file; do
+          file=$(printf '%q' "$file")
+          git_diff_ret_code=0
+          git diff --exit-code "$target_branch..$source_branch" -- "$file" || git_diff_ret_code=$?
+          if [ $git_diff_ret_code != 1 ]; then
+            echo "$file is not updated."
+            exit 1
+          fi
+        done
+      shell: bash
+      env:
+        SOURCE_BRANCH: "${{ inputs.source-branch }}"
+        TARGET_BRANCH: "${{ inputs.target-branch }}"
+        TARGET_FILE: "${{ inputs.target-file }}"
