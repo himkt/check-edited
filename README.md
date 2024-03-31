@@ -4,15 +4,22 @@ This GitHub Action checks if the specified file(s) have been updated between two
 ## Inputs
 
 ```yaml
-- uses: your-github-username/check-edited@v1
+- uses: himkt/check-edited@main
   with:
-    # The source branch to compare changes from. If not specified, the current HEAD is used.
-    # Required: No
+    # The source remote repository.
+    # Default: 'origin'
+    source-remote: ''
+
+    # The source branch to compare changes from.
+    # Default: 'HEAD'
     source-branch: ''
 
-    # The target branch to compare changes to. Defaults to 'main'.
-    # Required: Yesa
-    # Default: 'main
+    # The target remote repository.
+    # Default: 'origin'
+    target-remote: ''
+
+    # The target branch to compare changes to.
+    # Default: 'main'
     target-branch: ''
 
     # The file(s) to check for updates. Specify multiple files by separating them with commas
@@ -38,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: himkt/check-edited@v1
+      - uses: himkt/check-edited@main
         with:
           target-file: NEWS
 ```
@@ -60,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: himkt/check-edited@v1
+      - uses: himkt/check-edited@main
         with:
           target-file: NEWS
 ```
@@ -80,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: himkt/check-edited@v1
+      - uses: himkt/check-edited@main
         with:
           target-file: LICENSE
 ```

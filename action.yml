@@ -3,8 +3,17 @@ name: check edited
 description: Check target file(s) is updated between given branches
 
 inputs:
+  source-remote:
+    description: 'source remote repository'
+    default: 'origin'
+
   source-branch:
     description: 'source branch'
+    default: 'HEAD'
+
+  target-remote:
+    description: 'target remote repository'
+    default: 'origin'
 
   target-branch:
     description: 'target branch'
@@ -21,34 +30,31 @@ runs:
     - run: |
         set -euo pipefail
 
+        source_remote=$(printf '%q' "$SOURCE_REMOTE")
         source_branch=$(printf '%q' "$SOURCE_BRANCH")
+        source_refs="refs/remotes/$source_remote/$source_branch"
+        target_remote=$(printf '%q' "$TARGET_REMOTE")
         target_branch=$(printf '%q' "$TARGET_BRANCH")
+        target_refs="refs/remotes/$target_remote/$target_branch"
 
-        if [ "$source_branch" = "''" ]; then
-          echo "Using HEAD for source-branch"
-          source_branch=HEAD
-        else
-          source_branch="origin/$source_branch"
-          echo "Using specified branch $source_branch for source-branch"
-          git fetch --quiet "$source_branch"
-        fi
+        echo "Using $source_branch for source-branch"
+        git fetch --quiet "$source_remote" "$source_branch"
 
-        target_branch="origin/$target_branch"
         echo "Using $target_branch for target-branch"
-        git fetch --quiet "$target_branch"
+        git fetch --quiet "$target_remote" "$target_branch"
 
         echo
-        echo "============================="
-        echo "source-branch: $source_branch"
-        echo "target-branch: $target_branch"
-        echo "target-file: $TARGET_FILE"
-        echo "============================="
+        echo "================================================"
+        echo "| source-branch: $source_remote $source_branch  "
+        echo "| target-branch: $target_remote $target_branch  "
+        echo "| target-file:   $TARGET_FILE                   "
+        echo "================================================"
         echo
 
         echo "$TARGET_FILE" | tr ',' '\n' | while read -r file; do
           file=$(printf '%q' "$file")
           git_diff_ret_code=0
-          git diff --exit-code "$target_branch..$source_branch" -- "$file" || git_diff_ret_code=$?
+          git diff --exit-code "$target_refs..$source_refs" -- "$file" || git_diff_ret_code=$?
           if [ $git_diff_ret_code != 1 ]; then
             echo "$file is not updated."
             exit 1
@@ -56,6 +62,8 @@ runs:
         done
       shell: bash
       env:
+        SOURCE_REMOTE: "${{ inputs.source-remote }}"
         SOURCE_BRANCH: "${{ inputs.source-branch }}"
+        TARGET_REMOTE: "${{ inputs.target-remote }}"
         TARGET_BRANCH: "${{ inputs.target-branch }}"
         TARGET_FILE: "${{ inputs.target-file }}"
