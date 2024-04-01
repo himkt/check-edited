@@ -30,23 +30,19 @@ runs:
     - run: |
         set -euo pipefail
 
-        source_remote=$(printf '%q' "$SOURCE_REMOTE")
-        source_branch=$(printf '%q' "$SOURCE_BRANCH")
-        source_refs="refs/remotes/$source_remote/$source_branch"
-        target_remote=$(printf '%q' "$TARGET_REMOTE")
-        target_branch=$(printf '%q' "$TARGET_BRANCH")
-        target_refs="refs/remotes/$target_remote/$target_branch"
+        source_refs="refs/remotes/$SOURCE_REMOTE/$SOURCE_BRANCH"
+        target_refs="refs/remotes/$TARGET_REMOTE/$TARGET_BRANCH"
 
-        echo "Using $source_branch for source-branch"
-        git fetch --quiet "$source_remote" "$source_branch"
+        echo "Using $source_refs for source"
+        git fetch --quiet "$SOURCE_REMOTE" "$SOURCE_BRANCH"
 
-        echo "Using $target_branch for target-branch"
-        git fetch --quiet "$target_remote" "$target_branch"
+        echo "Using $target_refs for target"
+        git fetch --quiet "$TARGET_REMOTE" "$TARGET_BRANCH"
 
         echo
         echo "================================================"
-        echo "| source-branch: $source_remote $source_branch  "
-        echo "| target-branch: $target_remote $target_branch  "
+        echo "| source-refs: $source_refs                     "
+        echo "| target-refs: $target_refs                      "
         echo "| target-file:   $TARGET_FILE                   "
         echo "================================================"
         echo
