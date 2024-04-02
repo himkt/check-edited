@@ -33,6 +33,9 @@ echo "| target-file: $TARGET_FILE                     "
 echo "================================================"
 echo
 
+git show $source_refs
+git show $target_refs
+
 echo "diff[all]"
 git diff --exit-code "$target_refs..$source_refs"
 echo "$TARGET_FILE" | tr ',' '\n' | while read -r file; do
