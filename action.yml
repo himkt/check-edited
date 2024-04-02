@@ -64,7 +64,7 @@ runs:
         echo "$TARGET_FILE" | tr ',' '\n' | while read -r file; do
           file=$(printf '%q' "$file")
           git_diff_ret_code=0
-          git diff --exit-code "$target_refs..$source_refs" -- "$file" || git_diff_ret_code=$?
+          git diff --quiet --exit-code "$target_refs..$source_refs" -- "$file" || git_diff_ret_code=$?
           if [ $git_diff_ret_code != 1 ]; then
             echo "$file is not updated."
             exit 1
