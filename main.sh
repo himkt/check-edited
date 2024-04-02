@@ -2,9 +2,6 @@
 
 set -euo pipefail
 
-git branch -a
-git remote -v
-
 if [ -z "$SOURCE_REMOTE" ] && [ -z "$SOURCE_BRANCH" ]; then
   source_refs=$GITHUB_REF
 elif [ -z "$SOURCE_REMOTE" ] || [ -z "$SOURCE_BRANCH" ]; then
@@ -36,12 +33,16 @@ echo "| target-file: $TARGET_FILE                     "
 echo "================================================"
 echo
 
+echo "diff[all]"
+git diff --exit-code "$target_refs..$source_refs"
 echo "$TARGET_FILE" | tr ',' '\n' | while read -r file; do
   file=$(printf '%q' "$file")
   git_diff_ret_code=0
+  echo "diff"
+  git diff --exit-code "$target_refs..$source_refs" -- "$file"
   git diff --exit-code "$target_refs..$source_refs" -- "$file" || git_diff_ret_code=$?
   if [ $git_diff_ret_code != 1 ]; then
-            echo "$file is not updated."
-            exit 1
-          fi
-        done
+    echo "$file is not updated."
+    exit 1
+  fi
+done
