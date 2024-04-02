@@ -1,3 +1,7 @@
+### 2024/04/02
+
+- Clone repository with `--depth=1`
+
 ### 2024/03/31
 
 - Sanitize variables
