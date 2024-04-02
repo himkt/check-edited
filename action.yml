@@ -34,10 +34,10 @@ runs:
         target_refs="refs/remotes/$TARGET_REMOTE/$TARGET_BRANCH"
 
         echo "Using $source_refs for source"
-        git fetch --quiet "$SOURCE_REMOTE" "$SOURCE_BRANCH"
+        git fetch --depth=1 --quiet "$SOURCE_REMOTE" "$SOURCE_BRANCH"
 
         echo "Using $target_refs for target"
-        git fetch --quiet "$TARGET_REMOTE" "$TARGET_BRANCH"
+        git fetch --depth=1 --quiet "$TARGET_REMOTE" "$TARGET_BRANCH"
 
         echo
         echo "================================================"
