@@ -31,7 +31,7 @@ runs:
         set -euo pipefail
 
         if [ -z "$SOURCE_REMOTE" ] && [ -z "$SOURCE_BRANCH" ]; then
-          source_refs=$GITHUB_REF
+          source_refs=HEAD
         elif [ -z "$SOURCE_REMOTE" ] || [ -z "$SOURCE_BRANCH" ]; then
           echo "If you specify source-remote or source-branch, you need to set both of them."
           exit 1
@@ -41,7 +41,7 @@ runs:
         fi
 
         if [ -z "$TARGET_REMOTE" ] && [ -z "$TARGET_BRANCH" ]; then
-          target_refs=$GITHUB_REF
+          target_refs=HEAD
         elif [ -z "$TARGET_REMOTE" ] || [ -z "$TARGET_BRANCH" ]; then
           echo "If you specify target-remote or target-branch, you need to set both of them."
           exit 1
