@@ -7,11 +7,15 @@ This GitHub Action checks if the specified file(s) have been updated between two
 - uses: himkt/check-edited@main
   with:
     # The source remote repository.
-    # Default: 'origin'
+    # If source-remote is not empty, you must specify source-branch as well.
+    # If src-remote and src-branch are both empty, check-edited use $GITHUB_REF as a source refs.
+    # Default: ''
     source-remote: ''
 
     # The source branch to compare changes from.
-    # Default: 'HEAD'
+    # If source-branch is not empty, you must specify source-remote as well.
+    # If src-remote and src-branch are both empty, check-edited use $GITHUB_REF as a source refs.
+    # Default: ''
     source-branch: ''
 
     # The target remote repository.
