@@ -5,11 +5,11 @@ description: Check target file(s) is updated between given branches
 inputs:
   source-remote:
     description: 'source remote repository'
-    default: 'origin'
+    default: ''
 
   source-branch:
     description: 'source branch'
-    default: 'HEAD'
+    default: ''
 
   target-remote:
     description: 'target remote repository'
@@ -30,17 +30,28 @@ runs:
     - run: |
         set -euo pipefail
 
-        git branch -a
-        git remote -v
+        if [ -z "$SOURCE_REMOTE" ] && [ -z "$SOURCE_BRANCH" ]; then
+          source_refs=$GITHUB_REF
+        elif [ -z "$SOURCE_REMOTE" ] || [ -z "$SOURCE_BRANCH" ]; then
+          echo "If you specify source-remote or source-branch, you need to set both of them."
+          exit 1
+        else
+          source_refs="refs/remotes/$SOURCE_REMOTE/$SOURCE_BRANCH"
+          git fetch --depth=1 --quiet "$SOURCE_REMOTE" "$SOURCE_BRANCH"
+        fi
 
-        source_refs="refs/remotes/$SOURCE_REMOTE/$SOURCE_BRANCH"
-        target_refs="refs/remotes/$TARGET_REMOTE/$TARGET_BRANCH"
+        if [ -z "$TARGET_REMOTE" ] && [ -z "$TARGET_BRANCH" ]; then
+          target_refs=$GITHUB_REF
+        elif [ -z "$TARGET_REMOTE" ] || [ -z "$TARGET_BRANCH" ]; then
+          echo "If you specify target-remote or target-branch, you need to set both of them."
+          exit 1
+        else
+          target_refs="refs/remotes/$TARGET_REMOTE/$TARGET_BRANCH"
+          git fetch --depth=1 --quiet "$TARGET_REMOTE" "$TARGET_BRANCH"
+        fi
 
         echo "Using $source_refs for source"
-        git fetch --depth=1 --quiet "$SOURCE_REMOTE" "$SOURCE_BRANCH"
-
         echo "Using $target_refs for target"
-        git fetch --depth=1 --quiet "$TARGET_REMOTE" "$TARGET_BRANCH"
 
         echo
         echo "================================================"
