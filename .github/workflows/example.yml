@@ -7,6 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: himkt/check-edited@depth
+      - uses: himkt/check-edited@main
         with:
           target-file: NEWS
