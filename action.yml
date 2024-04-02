@@ -42,8 +42,8 @@ runs:
         echo
         echo "================================================"
         echo "| source-refs: $source_refs                     "
-        echo "| target-refs: $target_refs                      "
-        echo "| target-file:   $TARGET_FILE                   "
+        echo "| target-refs: $target_refs                     "
+        echo "| target-file: $TARGET_FILE                     "
         echo "================================================"
         echo
 
