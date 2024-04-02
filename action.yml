@@ -30,6 +30,9 @@ runs:
     - run: |
         set -euo pipefail
 
+        git branch -a
+        git remote -v
+
         source_refs="refs/remotes/$SOURCE_REMOTE/$SOURCE_BRANCH"
         target_refs="refs/remotes/$TARGET_REMOTE/$TARGET_BRANCH"
 
